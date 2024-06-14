@@ -1,0 +1,62 @@
+<view class="chat">
+  <!-- chat header -->
+  <view class="chat-view-header">
+    <view class="chat-view-header-title">
+      ChatGPT for MP
+    </view>
+  </view>
+  <!-- chat body -->
+  <view class="chat-body">
+    <scroll-view id="chat-message-view" class="chat-message-view" scroll-top="{{scrollTop}}" scroll-y scroll-with-animation>
+      <view id="chat-message-wrapper" class="chat-message-wrapper">
+        <view class="chat-message {{item.role === 'user' ? 'flex-row-reverse' : ''}} {{item.error ? 'chat-message-error' : ''}}" wx:for="{{messages}}" wx:key="id">
+          <!-- <view class="chat-message-avatar">
+          <view style="width: 28px; height: 28px; line-height: 28px; background-color: #fff; color: white; display: flex; justify-content: center; align-items: center; border-radius: 10px;margin-top: 1px;">A</view>
+        </view> -->
+          <view class="chat-message-container">
+            <!-- message content-->
+            <view class="chat-message-content">
+              <view wx:if="{{item.error}}" bindtap="handleRegenerate" data-id="{{item.id}}">{{ item.error }}</view>
+              <text user-select="{{true}}" wx:else>{{ item.content }}</text>
+            </view>
+            <!-- message extra -->
+            <view class="chat-message-extra" wx:if="{{item.role === 'assistant' && item.finished}}">
+              <view class="chat-audio-wrapper">
+                <view class="chat-icon chat-audio-play {{item.playing ? 'i-stop' : 'i-play'}}" bindtap="handlePlay"></view>
+                <view class="chat-audio-animation" wx:if="{{item.playing}}">
+                  <view class="chat-audio-animation-inner">
+                    <view class="chat-audio-animation-line" wx:for="{{7}}" wx:key="index" style="animation-delay: -0.{{item+1}}s"></view>
+                  </view>
+                </view>
+              </view>
+              <view class="chat-message-extra-actions">
+                <view class="chat-icon i-refresh" bindtap="handleRegenerate" data-id="{{item.id}}" wx:if="{{index === messages.length - 1}}"></view>
+                <view class="chat-icon i-copy" bindtap="handleCopy" data-content="{{item.content}}"></view>
+              </view>
+            </view>
+            <!-- </view> -->
+          </view>
+          <!-- <view class="chat-icon i-refresh" bindtap="handleRetry" data-id="{{item.id}}" wx:if="{{item.error}}"></view> -->
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- chat input -->
+  <view class="chat-input-panel">
+    <!-- <view class="chat-input-mic chat-button-default">
+      <view class="chat-icon i-mic"></view>
+    </view> -->
+    <textarea class="chat-input" cursor-spacing="{{16}}" auto-height model:value="{{prompt}}" bind:input="promptInput" />
+    <view class="chat-input-send {{ prompt ? 'chat-button-primary' : 'chat-button-default'}}" bindtap="handleSend">
+      <!-- <view class="chat-icon i-send"></view> -->
+      发送
+    </view>
+  </view>
+
+  <!-- chat stop -->
+  <button class="chat-button chat-message-stop" bindtap="handleStop" wx:if="{{true}}">
+    <view class="chat-icon i-stop"></view>
+    停止
+  </button>
+</view>
